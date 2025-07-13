@@ -1,0 +1,220 @@
+/* Custom styles for vine-like edges with wavy curves */
+.react-flow__edge-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-width 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(22, 163, 74, 0.2));
+  cursor: pointer;
+  stroke-width: 5px;
+}
+
+.react-flow__edge-path:hover {
+  stroke-width: 7px;
+  stroke: #059669;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)) drop-shadow(0 0 15px rgba(22, 163, 74, 0.5));
+}
+
+/* Enhanced bezier curves for more natural wavy appearance */
+.react-flow__edge.react-flow__edge-default .react-flow__edge-path {
+  stroke-dasharray: none;
+  animation: vine-pulse 4s ease-in-out infinite;
+}
+
+@keyframes vine-pulse {
+  0%, 100% { 
+    stroke-width: 5px;
+    opacity: 0.9;
+  }
+  50% { 
+    stroke-width: 5.5px;
+    opacity: 1;
+  }
+}
+
+/* Make edges more clickable */
+.react-flow__edge-path {
+  cursor: pointer;
+  stroke-width: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Add more leaf decorations along the path */
+.react-flow__edge::before {
+  content: '🌿';
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  font-size: 14px;
+  animation: leafBob 2s ease-in-out infinite;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.react-flow__edge::after {
+  content: '🍃';
+  position: absolute;
+  top: 65%;
+  right: 35%;
+  font-size: 12px;
+  animation: leafBob 2.5s ease-in-out infinite reverse;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.react-flow__edge:nth-child(3n)::before {
+  content: '🌱';
+  left: 25%;
+  top: 45%;
+  animation: leafBob 1.8s ease-in-out infinite 0.5s;
+}
+
+.react-flow__edge:nth-child(3n+1)::after {
+  content: '🌿';
+  right: 45%;
+  top: 55%;
+  animation: leafBob 2.2s ease-in-out infinite 1s;
+}
+
+@keyframes leafBob {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-3px) rotate(5deg);
+    opacity: 1;
+  }
+}
+
+/* Enhanced edge labels with natural leaf-like styling */
+.react-flow__edge-text {
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  font-size: 11px;
+  font-weight: 600;
+  fill: #15803d;
+  pointer-events: none;
+}
+
+/* Connection line animation for more organic feel */
+.react-flow__connection .react-flow__connection-path {
+  stroke: #16a34a;
+  stroke-width: 3px;
+  stroke-dasharray: 8,4;
+  stroke-linecap: round;
+  animation: dash-flow 1.5s linear infinite;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+/* Arrow markers with enhanced leaf-like appearance */
+.react-flow__arrowhead {
+  fill: #16a34a;
+  stroke: #16a34a;
+  stroke-width: 1px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+/* Add subtle glow effect to edges */
+.react-flow__edge-path[stroke*="16a34a"] {
+  filter: drop-shadow(0 0 4px rgba(22, 163, 74, 0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Enhanced controls with nature theme */
+.react-flow__controls {
+  background: rgba(240, 253, 244, 0.95);
+  border: 2px solid #22c55e;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.react-flow__controls-button {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #15803d;
+  transition: all 0.2s ease;
+}
+
+.react-flow__controls-button:hover {
+  background: #dcfce7;
+  border-color: #16a34a;
+  transform: scale(1.05);
+}
+
+/* MiniMap with nature theme */
+.react-flow__minimap {
+  background: rgba(240, 253, 244, 0.9);
+  border: 2px solid #22c55e;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* Background enhancements for a more natural look */
+.react-flow__background {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 20% 20%, #dcfce7 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, #ecfdf5 0%, transparent 60%),
+    radial-gradient(circle at 40% 70%, #f0fdf4 0%, transparent 50%);
+}
+
+/* Add small animated leaf particles */
+.react-flow__edge:nth-child(odd)::before {
+  content: '🌿';
+  position: absolute;
+  font-size: 10px;
+  top: 45%;
+  left: 50%;
+  animation: leafFloat 4s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+.react-flow__edge:nth-child(even)::after {
+  content: '🍃';
+  position: absolute;
+  font-size: 8px;
+  top: 55%;
+  right: 40%;
+  animation: leafFloat 3.5s ease-in-out infinite reverse;
+  opacity: 0.7;
+}
+
+@keyframes leafFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-4px) rotate(10deg);
+    opacity: 0.9;
+  }
+}
+
+/* Enhanced edge hover state */
+.react-flow__edge:hover {
+  z-index: 100;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 8px;
+  stroke: #059669;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)) drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
+}
+
+.react-flow__edge:hover::before,
+.react-flow__edge:hover::after {
+  animation-duration: 0.8s;
+  transform: scale(1.2);
+}
+
+/* Click feedback */
+.react-flow__edge:active .react-flow__edge-path {
+  stroke: #dc2626;
+  stroke-width: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
