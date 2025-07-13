@@ -12,11 +12,10 @@ export function VineEdge({
   sourcePosition,
   targetPosition,
   style = {},
-  data,
   markerEnd,
   label,
 }: EdgeProps) {
-  const [edgePath, labelX, labelY] = getBezierPath({
+  const [, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,

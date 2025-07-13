@@ -8,7 +8,6 @@ import {
   Background, 
   useNodesState, 
   useEdgesState,
-  addEdge,
   Connection,
   Edge,
   BackgroundVariant,
@@ -26,7 +25,7 @@ import { RelationshipModal } from './RelationshipModal';
 import { RelationshipEditModal } from './RelationshipEditModal';
 import { VineEdge } from './VineEdge';
 import { useCharacterTree } from '@/hooks/useCharacterTree';
-import { RelationshipType } from '@/types/character';
+import { RelationshipType, Relationship } from '@/types/character';
 
 const nodeTypes = {
   character: CharacterNode,
@@ -48,7 +47,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
   const [showRelationshipEditModal, setShowRelationshipEditModal] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [selectedRelationship, setSelectedRelationship] = useState<{
-    relationship: any;
+    relationship: Relationship;
     sourceCharacterId: string;
   } | null>(null);
   const [pendingConnection, setPendingConnection] = useState<{
@@ -78,7 +77,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
     };
 
     return [addButtonNode, ...characterNodes];
-  }, [activeTree.characters, activeTree.updatedAt]);
+  }, [activeTree.characters]);
 
   // Convert relationships to edges
   const initialEdges: Edge[] = useMemo(() => {
@@ -119,7 +118,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
     });
 
     return edges;
-  }, [activeTree.characters, activeTree.updatedAt]);
+  }, [activeTree.characters]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -251,13 +250,13 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
   React.useEffect(() => {
     console.log('Updating nodes, activeTree characters:', activeTree.characters.length);
     setNodes(initialNodes);
-  }, [initialNodes, setNodes]);
+  }, [initialNodes, setNodes, activeTree.characters.length]);
 
   // Update edges when relationships change
   React.useEffect(() => {
     console.log('Updating edges, total relationships:', activeTree.characters.reduce((sum, char) => sum + char.relationships.length, 0));
     setEdges(initialEdges);
-  }, [initialEdges, setEdges]);
+  }, [initialEdges, setEdges, activeTree.characters]);
 
   return (
     <div className="w-full h-[600px] border-2 border-green-200 rounded-lg bg-gradient-to-br from-green-50 to-blue-50 overflow-hidden">
