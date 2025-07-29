@@ -7,7 +7,7 @@ import { RelationshipType } from '@/types/character';
 interface RelationshipModalProps {
   sourceCharacterName: string;
   targetCharacterName: string;
-  onSave: (type: RelationshipType, description: string) => void;
+  onSave: (type: RelationshipType, description?: string) => void;
   onClose: () => void;
 }
 
@@ -22,9 +22,8 @@ export function RelationshipModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (description.trim()) {
-      onSave(relationshipType, description.trim());
-    }
+    // Description is now optional - we can save with just the relationship type
+    onSave(relationshipType, description.trim() || undefined);
   };
 
   const relationshipOptions = [
@@ -78,18 +77,17 @@ export function RelationshipModal({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
+                Description (Optional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Describe this relationship..."
-                required
+                placeholder="Add additional details about this relationship..."
               />
               <p className="text-xs text-gray-500 mt-1">
-                Example: &quot;Best friend since childhood&quot; or &quot;Mentor who taught magic&quot;
+                The relationship type will be used for grouping and connections.
               </p>
             </div>
           </div>
@@ -104,8 +102,7 @@ export function RelationshipModal({
             </button>
             <button
               type="submit"
-              disabled={!description.trim()}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
             >
               Create Relationship
             </button>

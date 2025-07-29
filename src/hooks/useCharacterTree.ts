@@ -1,14 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Character, CharacterTree, RelationshipType } from '@/types/character';
+import { Character, CharacterTree, RelationshipType, CharacterGroup } from '@/types/character';
 import { StorageManager } from '@/utils/storage';
+import { CharacterGroupingManager } from '@/utils/characterGrouping';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useCharacterTree = (treeId?: string) => {
   const [currentTree, setCurrentTree] = useState<CharacterTree | null>(null);
   const [trees, setTrees] = useState<CharacterTree[]>([]);
   const [loading, setLoading] = useState(true);
+  const [groups, setGroups] = useState<CharacterGroup[]>([]);
+  const [isGroupingEnabled, setIsGroupingEnabled] = useState(false);
 
   useEffect(() => {
     const loadTrees = () => {
@@ -114,7 +117,7 @@ export const useCharacterTree = (treeId?: string) => {
     updateTree(updatedTree);
   };
 
-  const addRelationship = (sourceCharacterId: string, targetCharacterId: string, type: RelationshipType, description: string) => {
+  const addRelationship = (sourceCharacterId: string, targetCharacterId: string, type: RelationshipType, description?: string) => {
     if (!currentTree) return;
 
     const relationshipId = uuidv4();
@@ -130,7 +133,7 @@ export const useCharacterTree = (treeId?: string) => {
                   id: relationshipId,
                   targetCharacterId,
                   type,
-                  description
+                  ...(description && { description })
                 }
               ],
               updatedAt: new Date()
@@ -143,7 +146,7 @@ export const useCharacterTree = (treeId?: string) => {
     updateTree(updatedTree);
   };
 
-  const updateRelationship = (sourceCharacterId: string, relationshipId: string, type: RelationshipType, description: string) => {
+  const updateRelationship = (sourceCharacterId: string, relationshipId: string, type: RelationshipType, description?: string) => {
     if (!currentTree) return;
 
     const updatedTree = {
@@ -154,7 +157,7 @@ export const useCharacterTree = (treeId?: string) => {
               ...char,
               relationships: char.relationships.map(rel =>
                 rel.id === relationshipId
-                  ? { ...rel, type, description }
+                  ? { ...rel, type, ...(description !== undefined && { description }) }
                   : rel
               ),
               updatedAt: new Date()
@@ -191,6 +194,67 @@ export const useCharacterTree = (treeId?: string) => {
     return currentTree?.characters.find(char => char.id === id);
   };
 
+  // Grouping functions
+  const enableGrouping = () => {
+    if (!currentTree) return;
+    
+    const { groups: newGroups } = CharacterGroupingManager.analyzeAndGroup(currentTree.characters);
+    
+    // Position characters in groups
+    let updatedCharacters = [...currentTree.characters];
+    newGroups.forEach(group => {
+      updatedCharacters = CharacterGroupingManager.positionCharactersInGroup(group, updatedCharacters);
+    });
+
+    // Position ungrouped characters
+    const finalUngroupedCharacters = updatedCharacters.filter(char => 
+      !newGroups.some(group => group.characterIds.includes(char.id))
+    );
+    
+    const positionedUngroupedCharacters = CharacterGroupingManager.positionUngroupedCharacters(
+      finalUngroupedCharacters,
+      newGroups
+    );
+
+    // Update all character positions
+    updatedCharacters = updatedCharacters.map(char => {
+      const positioned = positionedUngroupedCharacters.find(positioned => positioned.id === char.id);
+      return positioned || char;
+    });
+
+    setGroups(newGroups);
+    setIsGroupingEnabled(true);
+    
+    // Update the tree with new positions
+    const updatedTree = {
+      ...currentTree,
+      characters: updatedCharacters,
+      updatedAt: new Date()
+    };
+    updateTree(updatedTree);
+  };
+
+  const disableGrouping = () => {
+    setGroups([]);
+    setIsGroupingEnabled(false);
+  };
+
+  const toggleGrouping = () => {
+    if (isGroupingEnabled) {
+      disableGrouping();
+    } else {
+      enableGrouping();
+    }
+  };
+
+  const updateGroupPosition = (groupId: string, newPosition: { x: number; y: number }) => {
+    setGroups(prev => prev.map(group => 
+      group.id === groupId 
+        ? { ...group, position: newPosition }
+        : group
+    ));
+  };
+
   return {
     currentTree,
     trees,
@@ -204,6 +268,12 @@ export const useCharacterTree = (treeId?: string) => {
     addRelationship,
     updateRelationship,
     deleteRelationship,
-    getCharacterById
+    getCharacterById,
+    groups,
+    isGroupingEnabled,
+    enableGrouping,
+    disableGrouping,
+    toggleGrouping,
+    updateGroupPosition
   };
 };

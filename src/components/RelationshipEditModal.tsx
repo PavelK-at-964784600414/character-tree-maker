@@ -8,7 +8,7 @@ interface RelationshipEditModalProps {
   relationship: Relationship;
   sourceCharacterName: string;
   targetCharacterName: string;
-  onUpdate: (relationshipId: string, type: RelationshipType, description: string) => void;
+  onUpdate: (relationshipId: string, type: RelationshipType, description?: string) => void;
   onDelete: (relationshipId: string) => void;
   onClose: () => void;
 }
@@ -22,13 +22,11 @@ export function RelationshipEditModal({
   onClose 
 }: RelationshipEditModalProps) {
   const [relationshipType, setRelationshipType] = useState<RelationshipType>(relationship.type);
-  const [description, setDescription] = useState(relationship.description);
+  const [description, setDescription] = useState(relationship.description || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (description.trim()) {
-      onUpdate(relationship.id, relationshipType, description.trim());
-    }
+    onUpdate(relationship.id, relationshipType, description.trim() || undefined);
   };
 
   const handleDelete = () => {
@@ -91,16 +89,18 @@ export function RelationshipEditModal({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
+                Description (Optional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Describe this relationship..."
-                required
+                placeholder="Add additional details about this relationship..."
               />
+              <p className="text-xs text-gray-500 mt-1">
+                The relationship type will be used for grouping and connections.
+              </p>
             </div>
           </div>
 
@@ -124,8 +124,7 @@ export function RelationshipEditModal({
               </button>
               <button
                 type="submit"
-                disabled={!description.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
               >
                 Update
               </button>

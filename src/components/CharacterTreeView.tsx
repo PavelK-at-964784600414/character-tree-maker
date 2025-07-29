@@ -20,6 +20,7 @@ import '../styles/vine-edges.css';
 import { CharacterTree } from '@/types/character';
 import { CharacterNode } from './CharacterNode';
 import { AddCharacterButton } from './AddCharacterButton';
+import { GroupLabelNode } from './GroupLabelNode';
 import { CharacterModal } from './CharacterModal';
 import { RelationshipModal } from './RelationshipModal';
 import { RelationshipEditModal } from './RelationshipEditModal';
@@ -30,6 +31,7 @@ import { RelationshipType, Relationship } from '@/types/character';
 const nodeTypes = {
   character: CharacterNode,
   addButton: AddCharacterButton,
+  groupLabel: GroupLabelNode,
 };
 
 const edgeTypes = {
@@ -41,7 +43,19 @@ interface CharacterTreeViewProps {
 }
 
 export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
-  const { updateCharacter, addCharacter, deleteCharacter, addRelationship, updateRelationship, deleteRelationship, currentTree } = useCharacterTree(tree.id);
+  const { 
+    updateCharacter, 
+    addCharacter, 
+    deleteCharacter, 
+    addRelationship, 
+    updateRelationship, 
+    deleteRelationship, 
+    currentTree,
+    groups,
+    isGroupingEnabled,
+    toggleGrouping,
+    updateGroupPosition
+  } = useCharacterTree(tree.id);
   const [showCharacterModal, setShowCharacterModal] = useState(false);
   const [showRelationshipModal, setShowRelationshipModal] = useState(false);
   const [showRelationshipEditModal, setShowRelationshipEditModal] = useState(false);
@@ -68,6 +82,18 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
       data: { character },
     }));
 
+    // Add group label nodes if grouping is enabled
+    const groupLabelNodes = isGroupingEnabled ? groups.map((group) => ({
+      id: `group-${group.relationshipType}`,
+      type: 'groupLabel',
+      position: { x: group.position.x, y: group.position.y },
+      data: { 
+        groupType: group.relationshipType,
+        characterCount: group.characterIds.length 
+      },
+      draggable: true, // Make group labels draggable
+    })) : [];
+
     // Add button for adding new characters
     const addButtonNode = {
       id: 'add-button',
@@ -76,8 +102,8 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
       data: { onAdd: () => setShowCharacterModal(true) },
     };
 
-    return [addButtonNode, ...characterNodes];
-  }, [activeTree.characters]);
+    return [addButtonNode, ...characterNodes, ...groupLabelNodes];
+  }, [activeTree.characters, groups, isGroupingEnabled]);
 
   // Convert relationships to edges
   const initialEdges: Edge[] = useMemo(() => {
@@ -90,7 +116,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
           source: character.id,
           target: relationship.targetCharacterId,
           type: 'vine', // Use custom vine edge for leaf decorations
-          label: relationship.description,
+          label: relationship.type, // Use relationship type as primary label
           animated: true,
           style: { 
             stroke: '#16a34a', 
@@ -142,8 +168,33 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
       updateCharacter(node.id, {
         position: node.position
       });
+    } else if (node.type === 'groupLabel' && isGroupingEnabled) {
+      // When group label is moved, move all characters in the group
+      const groupId = node.id.replace('group-', '');
+      const group = groups.find(g => g.relationshipType === groupId);
+      
+      if (group) {
+        const deltaX = node.position.x - group.position.x;
+        const deltaY = node.position.y - group.position.y;
+        
+        // Update group position
+        updateGroupPosition(group.id, { x: node.position.x, y: node.position.y });
+        
+        // Update character positions relative to the group
+        group.characterIds.forEach(characterId => {
+          const character = activeTree.characters.find(c => c.id === characterId);
+          if (character) {
+            updateCharacter(characterId, {
+              position: {
+                x: character.position.x + deltaX,
+                y: character.position.y + deltaY
+              }
+            });
+          }
+        });
+      }
     }
-  }, [updateCharacter]);
+  }, [updateCharacter, updateGroupPosition, isGroupingEnabled, groups, activeTree.characters]);
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     if (node.type === 'character') {
@@ -189,7 +240,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
     setSelectedCharacter(null);
   }, [deleteCharacter]);
 
-  const handleSaveRelationship = useCallback((type: RelationshipType, description: string) => {
+  const handleSaveRelationship = useCallback((type: RelationshipType, description?: string) => {
     if (pendingConnection) {
       addRelationship(pendingConnection.source, pendingConnection.target, type, description);
       setShowRelationshipModal(false);
@@ -225,7 +276,7 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
     }
   }, [activeTree.characters]);
 
-  const handleUpdateRelationship = useCallback((relationshipId: string, type: RelationshipType, description: string) => {
+  const handleUpdateRelationship = useCallback((relationshipId: string, type: RelationshipType, description?: string) => {
     if (selectedRelationship) {
       updateRelationship(selectedRelationship.sourceCharacterId, relationshipId, type, description);
       setShowRelationshipEditModal(false);
@@ -259,7 +310,23 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
   }, [initialEdges, setEdges, activeTree.characters]);
 
   return (
-    <div className="w-full h-[600px] border-2 border-green-200 rounded-lg bg-gradient-to-br from-green-50 to-blue-50 overflow-hidden">
+    <div className="w-full h-[600px] border-2 border-green-200 dark:border-green-700 rounded-lg bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 overflow-hidden relative">
+      {/* Grouping Toggle Button */}
+      <div className="absolute top-4 right-4 z-10">
+        <button
+          onClick={toggleGrouping}
+          className={`
+            px-4 py-2 rounded-lg font-medium transition-all duration-200
+            ${isGroupingEnabled 
+              ? 'bg-green-600 text-white hover:bg-green-700' 
+              : 'bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
+            }
+          `}
+        >
+          {isGroupingEnabled ? '🔗 Grouped' : '📊 Group'}
+        </button>
+      </div>
+
       <ReactFlow
         nodes={nodes}
         edges={edges}

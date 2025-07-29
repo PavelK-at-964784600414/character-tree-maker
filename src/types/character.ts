@@ -16,7 +16,7 @@ export interface Relationship {
   id: string;
   targetCharacterId: string;
   type: RelationshipType;
-  description: string;
+  description?: string; // Made optional
 }
 
 export enum RelationshipType {
@@ -57,5 +57,13 @@ export interface TreeEdge {
   source: string;
   target: string;
   type: 'smoothstep';
+  label: string;
+}
+
+export interface CharacterGroup {
+  id: string;
+  relationshipType: RelationshipType;
+  characterIds: string[];
+  position: { x: number; y: number };
   label: string;
 }

@@ -16,16 +16,16 @@ export function CharacterNode({ data }: CharacterNodeProps) {
   // Generate a consistent color based on character name
   const getCharacterColor = (name: string) => {
     const colors = [
-      'bg-emerald-100 border-emerald-300 text-emerald-800',
-      'bg-blue-100 border-blue-300 text-blue-800',
-      'bg-purple-100 border-purple-300 text-purple-800',
-      'bg-pink-100 border-pink-300 text-pink-800',
-      'bg-yellow-100 border-yellow-300 text-yellow-800',
-      'bg-orange-100 border-orange-300 text-orange-800',
-      'bg-red-100 border-red-300 text-red-800',
-      'bg-indigo-100 border-indigo-300 text-indigo-800',
-      'bg-teal-100 border-teal-300 text-teal-800',
-      'bg-cyan-100 border-cyan-300 text-cyan-800',
+      'bg-emerald-100 dark:bg-emerald-900/40 border-emerald-300 dark:border-emerald-600 text-emerald-800 dark:text-emerald-200',
+      'bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-600 text-blue-800 dark:text-blue-200',
+      'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-600 text-purple-800 dark:text-purple-200',
+      'bg-pink-100 dark:bg-pink-900/40 border-pink-300 dark:border-pink-600 text-pink-800 dark:text-pink-200',
+      'bg-yellow-100 dark:bg-yellow-900/40 border-yellow-300 dark:border-yellow-600 text-yellow-800 dark:text-yellow-200',
+      'bg-orange-100 dark:bg-orange-900/40 border-orange-300 dark:border-orange-600 text-orange-800 dark:text-orange-200',
+      'bg-red-100 dark:bg-red-900/40 border-red-300 dark:border-red-600 text-red-800 dark:text-red-200',
+      'bg-indigo-100 dark:bg-indigo-900/40 border-indigo-300 dark:border-indigo-600 text-indigo-800 dark:text-indigo-200',
+      'bg-teal-100 dark:bg-teal-900/40 border-teal-300 dark:border-teal-600 text-teal-800 dark:text-teal-200',
+      'bg-cyan-100 dark:bg-cyan-900/40 border-cyan-300 dark:border-cyan-600 text-cyan-800 dark:text-cyan-200',
     ];
     
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -39,7 +39,7 @@ export function CharacterNode({ data }: CharacterNodeProps) {
       <Handle 
         type="target" 
         position={Position.Top} 
-        className="w-3 h-3 bg-amber-600 border-2 border-amber-800 rounded-full"
+        className="w-3 h-3 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
       />
       
       {/* Leaf-shaped character node */}
@@ -97,7 +97,7 @@ export function CharacterNode({ data }: CharacterNodeProps) {
                 </span>
               ))}
               {character.traits.length > 4 && (
-                <span className="px-2 py-0.5 bg-white bg-opacity-60 text-xs rounded-full font-medium">
+                <span className="px-2 py-0.5 bg-white dark:bg-gray-700 bg-opacity-60 dark:bg-opacity-80 text-xs rounded-full font-medium">
                   +{character.traits.length - 4}
                 </span>
               )}
@@ -117,7 +117,7 @@ export function CharacterNode({ data }: CharacterNodeProps) {
       <Handle 
         type="source" 
         position={Position.Bottom} 
-        className="w-3 h-3 bg-amber-600 border-2 border-amber-800 rounded-full"
+        className="w-3 h-3 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
       />
     </div>
   );
