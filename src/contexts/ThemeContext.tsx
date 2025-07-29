@@ -7,6 +7,7 @@ type Theme = 'light' | 'dark';
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
+  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -15,41 +16,61 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
+  // Initialize theme on client side only
   useEffect(() => {
-    setMounted(true);
-    // Check if user has a saved theme preference
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      // Check system preference
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      setTheme(systemTheme);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem('theme', theme);
-      if (theme === 'dark') {
+    const storedTheme = localStorage.getItem('character-tree-theme') as Theme;
+    console.log('Stored theme:', storedTheme);
+    
+    if (storedTheme) {
+      setTheme(storedTheme);
+      if (storedTheme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
+      console.log('Applied stored theme:', storedTheme);
+    } else {
+      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = isDarkMode ? 'dark' : 'light';
+      setTheme(initialTheme);
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      console.log('Applied system theme:', initialTheme);
+    }
+    setMounted(true);
+  }, []);
+
+  // Update theme when it changes
+  useEffect(() => {
+    if (mounted) {
+      console.log('Theme changed to:', theme);
+      localStorage.setItem('character-tree-theme', theme);
+      
+      // More explicit class management
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        console.log('Added dark class to html element');
+      } else {
+        document.documentElement.classList.remove('dark');
+        console.log('Removed dark class from html element');
+      }
+      
+      // Log current classes
+      console.log('HTML classes:', document.documentElement.className);
     }
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    console.log('Toggling theme from', theme, 'to', newTheme);
+    setTheme(newTheme);
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>;
-  }
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );
