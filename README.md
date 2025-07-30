@@ -1,3 +1,8 @@
+## License
+
+This project is licensed under the GNU AGPL v3.0. See the [LICENSE](./LICENSE) file for details.
+
+
 # Character Tree Maker
 
 A beautiful, interactive web application for creating and visualizing character relationship trees. Built with Next.js and featuring an organic, nature-inspired design with vine-like connections and animated leaf decorations.
@@ -58,6 +63,42 @@ bun dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## 🔐 Authentication Setup (Optional)
+
+The application supports both guest mode and Google authentication. Users can continue as guests (data stored locally) or sign in with Google for a personalized experience.
+
+### Setting up Google OAuth
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the Google+ API
+4. Create credentials (OAuth 2.0 Client ID)
+5. Add authorized redirect URIs:
+   - `http://localhost:3000/api/auth/callback/google` (development)
+   - `https://yourdomain.com/api/auth/callback/google` (production)
+
+### Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```bash
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret-here
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=your-google-client-id-here
+GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+```
+
+### Authentication Features
+
+- **Guest Mode**: Continue without signing in, data stored locally
+- **Google Sign-In**: Authenticate with Google account
+- **User Profile**: Display user information in the header
+- **Secure Sessions**: JWT-based session management
+- **Automatic Redirects**: Seamless authentication flow
 
 ## 🎮 How to Use
 
