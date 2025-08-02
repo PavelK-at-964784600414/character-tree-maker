@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from '@/contexts/AuthContext';
-import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { User, LogOut, Settings } from 'lucide-react';
 import Image from 'next/image';
@@ -15,12 +14,8 @@ export default function UserProfile() {
   }
 
   const handleSignOut = async () => {
-    if (isLoggedIn) {
-      await signOut({ callbackUrl: '/auth/signin' });
-    } else {
-      logout();
-      window.location.href = '/auth/signin';
-    }
+    await logout();
+    window.location.href = '/auth/signin';
   };
 
   return (

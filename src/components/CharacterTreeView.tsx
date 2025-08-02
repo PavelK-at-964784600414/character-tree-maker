@@ -74,7 +74,6 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
 
   // Convert characters to nodes
   const initialNodes: Node[] = useMemo(() => {
-    console.log('Generating nodes from characters:', activeTree.characters);
     const characterNodes = activeTree.characters.map((character) => ({
       id: character.id,
       type: 'character',
@@ -221,8 +220,6 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
         y: 200 + (existingCharacters % 3) * 100, // Stagger vertically
       };
       
-      console.log('Adding new character:', { ...characterData, position: newPosition });
-      
       addCharacter({
         ...characterData,
         position: newPosition,
@@ -299,13 +296,11 @@ export function CharacterTreeView({ tree }: CharacterTreeViewProps) {
 
   // Update nodes when characters change
   React.useEffect(() => {
-    console.log('Updating nodes, activeTree characters:', activeTree.characters.length);
     setNodes(initialNodes);
   }, [initialNodes, setNodes, activeTree.characters.length]);
 
   // Update edges when relationships change
   React.useEffect(() => {
-    console.log('Updating edges, total relationships:', activeTree.characters.reduce((sum, char) => sum + char.relationships.length, 0));
     setEdges(initialEdges);
   }, [initialEdges, setEdges, activeTree.characters]);
 

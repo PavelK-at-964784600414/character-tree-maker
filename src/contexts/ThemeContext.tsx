@@ -19,7 +19,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Initialize theme on client side only
   useEffect(() => {
     const storedTheme = localStorage.getItem('character-tree-theme') as Theme;
-    console.log('Stored theme:', storedTheme);
     
     if (storedTheme) {
       setTheme(storedTheme);
@@ -28,7 +27,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       } else {
         document.documentElement.classList.remove('dark');
       }
-      console.log('Applied stored theme:', storedTheme);
     } else {
       const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const initialTheme = isDarkMode ? 'dark' : 'light';
@@ -38,7 +36,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       } else {
         document.documentElement.classList.remove('dark');
       }
-      console.log('Applied system theme:', initialTheme);
     }
     setMounted(true);
   }, []);
@@ -46,26 +43,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Update theme when it changes
   useEffect(() => {
     if (mounted) {
-      console.log('Theme changed to:', theme);
       localStorage.setItem('character-tree-theme', theme);
       
-      // More explicit class management
       if (theme === 'dark') {
         document.documentElement.classList.add('dark');
-        console.log('Added dark class to html element');
       } else {
         document.documentElement.classList.remove('dark');
-        console.log('Removed dark class from html element');
       }
-      
-      // Log current classes
-      console.log('HTML classes:', document.documentElement.className);
     }
   }, [theme, mounted]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
-    console.log('Toggling theme from', theme, 'to', newTheme);
     setTheme(newTheme);
   };
 

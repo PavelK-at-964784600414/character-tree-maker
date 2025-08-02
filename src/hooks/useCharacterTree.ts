@@ -51,8 +51,6 @@ export const useCharacterTree = (treeId?: string) => {
       updatedAt: new Date()
     };
     
-    console.log('Updating tree in hook:', updatedTree);
-    
     StorageManager.saveTree(updatedTree);
     setTrees(prev => prev.map(t => t.id === tree.id ? updatedTree : t));
     setCurrentTree(updatedTree);
@@ -76,15 +74,11 @@ export const useCharacterTree = (treeId?: string) => {
       updatedAt: new Date()
     };
 
-    console.log('Adding character to tree:', newCharacter);
-
     const updatedTree = {
       ...currentTree,
       characters: [...currentTree.characters, newCharacter],
       updatedAt: new Date()
     };
-
-    console.log('Updated tree:', updatedTree);
 
     updateTree(updatedTree);
   };

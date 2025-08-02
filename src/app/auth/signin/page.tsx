@@ -1,19 +1,33 @@
 "use client";
 
-import { signIn } from 'next-auth/react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function SignInPage() {
-  const { isLoggedIn, isGuest, continueAsGuest } = useAuth();
+  const { isLoggedIn, isGuest, continueAsGuest, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoggedIn || isGuest) {
+    if (!loading && (isLoggedIn || isGuest)) {
       router.push('/');
     }
-  }, [isLoggedIn, isGuest, router]);
+  }, [isLoggedIn, isGuest, router, loading]);
+
+  const handleGoogleSignIn = () => {
+    window.location.href = '/api/auth/google/signin';
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
@@ -31,7 +45,7 @@ export default function SignInPage() {
           <div className="space-y-4">
             {/* Google Sign In Button */}
             <button
-              onClick={() => signIn('google', { callbackUrl: '/', redirect: true })}
+              onClick={handleGoogleSignIn}
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">

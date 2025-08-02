@@ -75,8 +75,8 @@ The application supports both guest mode and Google authentication. Users can co
 3. Enable the Google+ API
 4. Create credentials (OAuth 2.0 Client ID)
 5. Add authorized redirect URIs:
-   - `http://localhost:3000/api/auth/callback/google` (development)
-   - `https://yourdomain.com/api/auth/callback/google` (production)
+   - `http://localhost:3000/api/auth/google/callback` (development)
+   - `https://yourdomain.com/api/auth/google/callback` (production)
 
 ### Environment Variables
 
