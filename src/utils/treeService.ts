@@ -135,7 +135,7 @@ export class DatabaseTreeService {
       id: dbTree.id,
       name: dbTree.name,
       description: dbTree.description,
-      characters: dbTree.characters.map((char: any) => this.transformDatabaseCharacter(char)),
+      characters: dbTree.characters.map((char: DbCharacter) => this.transformDatabaseCharacter(char)),
       createdAt: new Date(dbTree.createdAt),
       updatedAt: new Date(dbTree.updatedAt),
     };
