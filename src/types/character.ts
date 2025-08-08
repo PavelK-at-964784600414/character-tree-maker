@@ -35,6 +35,7 @@ export enum RelationshipType {
 export interface CharacterTree {
   id: string;
   name: string;
+  description?: string;
   characters: Character[];
   createdAt: Date;
   updatedAt: Date;

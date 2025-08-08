@@ -116,7 +116,7 @@ export function CharacterModal({ character, onSave, onDelete, onClose }: Charact
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 required
               />
             </div>
@@ -130,7 +130,7 @@ export function CharacterModal({ character, onSave, onDelete, onClose }: Charact
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 placeholder="Describe this character..."
               />
             </div>
@@ -145,7 +145,7 @@ export function CharacterModal({ character, onSave, onDelete, onClose }: Charact
                   type="number"
                   value={formData.age}
                   onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                   min="0"
                   max="200"
                 />
@@ -158,7 +158,7 @@ export function CharacterModal({ character, onSave, onDelete, onClose }: Charact
                   type="text"
                   value={formData.occupation}
                   onChange={(e) => setFormData(prev => ({ ...prev, occupation: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                   placeholder="e.g., Knight, Wizard, Merchant"
                 />
               </div>
@@ -175,7 +175,7 @@ export function CharacterModal({ character, onSave, onDelete, onClose }: Charact
                   value={newTrait}
                   onChange={(e) => setNewTrait(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                   placeholder="Add a trait..."
                 />
                 <button

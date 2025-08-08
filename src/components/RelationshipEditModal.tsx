@@ -77,7 +77,7 @@ export function RelationshipEditModal({
               <select
                 value={relationshipType}
                 onChange={(e) => setRelationshipType(e.target.value as RelationshipType)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               >
                 {relationshipOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -95,7 +95,7 @@ export function RelationshipEditModal({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 placeholder="Add additional details about this relationship..."
               />
               <p className="text-xs text-gray-500 mt-1">

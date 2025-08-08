@@ -39,7 +39,7 @@ export function CharacterNode({ data }: CharacterNodeProps) {
       <Handle 
         type="target" 
         position={Position.Top} 
-        className="w-3 h-3 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
+        className="w-6 h-6 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
       />
       
       {/* Leaf-shaped character node */}
@@ -117,7 +117,7 @@ export function CharacterNode({ data }: CharacterNodeProps) {
       <Handle 
         type="source" 
         position={Position.Bottom} 
-        className="w-3 h-3 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
+        className="w-6 h-6 bg-amber-600 dark:bg-amber-500 border-2 border-amber-800 dark:border-amber-600 rounded-full"
       />
     </div>
   );
