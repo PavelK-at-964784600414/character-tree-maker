@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from '@/lib/session';
+import type { Prisma } from '@prisma/client';
 
 interface Params {
   treeId: string;
 }
 
 // GET /api/trees/[treeId] - Get a specific tree
-export async function GET(request: NextRequest, { params }: { params: Params }) {
+export async function GET(request: NextRequest, context: { params: Promise<Params> }) {
   try {
+    const params = await context.params;
     const session = await getServerSession();
     
     if (!session) {
@@ -52,8 +54,9 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
 }
 
 // PUT /api/trees/[treeId] - Update a tree
-export async function PUT(request: NextRequest, { params }: { params: Params }) {
+export async function PUT(request: NextRequest, context: { params: Promise<Params> }) {
   try {
+    const params = await context.params;
     const session = await getServerSession();
     
     if (!session) {
@@ -83,7 +86,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     }
 
     // Update tree in a transaction
-    const updatedTree = await prisma.$transaction(async (tx) => {
+    const updatedTree = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Update tree basic info
       await tx.characterTree.update({
         where: { id: params.treeId },
@@ -165,8 +168,9 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
 }
 
 // DELETE /api/trees/[treeId] - Delete a tree
-export async function DELETE(request: NextRequest, { params }: { params: Params }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<Params> }) {
   try {
+    const params = await context.params;
     const session = await getServerSession();
     
     if (!session) {
