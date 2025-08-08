@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useContext } from 'react';
-import { Character, CharacterTree, RelationshipType, CharacterGroup } from '@/types/character';
+import { Character, CharacterTree, CharacterGroup } from '@/types/character';
 import { getTreeService } from '@/utils/treeService';
 import { CharacterGroupingManager } from '@/utils/characterGrouping';
 import { AuthContext } from '@/contexts/AuthContext';
@@ -45,7 +45,7 @@ export const useCharacterTree = (treeId?: string) => {
     };
 
     loadTrees();
-  }, [treeId, isLoggedIn]);
+  }, [treeId, isLoggedIn, treeService]);
 
   const createTree = async (name: string, description?: string): Promise<CharacterTree> => {
     try {

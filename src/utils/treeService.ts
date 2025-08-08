@@ -1,4 +1,66 @@
-import { CharacterTree, Character, Relationship } from '@/types/character';
+import { CharacterTree, Character, RelationshipType } from '@/types/character';
+
+// Database types for API responses
+interface DbCharacter {
+  id: string;
+  name: string;
+  description?: string;
+  age?: number;
+  role?: string;
+  background?: string;
+  positionX: number;
+  positionY: number;
+  relationships: DbRelationship[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface DbRelationship {
+  id: string;
+  relatedToId: string;
+  type: string;
+  description?: string;
+}
+
+interface DbTree {
+  id: string;
+  name: string;
+  description?: string;
+  characters: DbCharacter[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Local storage types
+interface StoredCharacter {
+  id: string;
+  name: string;
+  description: string;
+  age?: number;
+  occupation?: string;
+  traits: string[];
+  relationships: StoredRelationship[];
+  parentId?: string;
+  position: { x: number; y: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface StoredRelationship {
+  id: string;
+  targetCharacterId: string;
+  type: string;
+  description?: string;
+}
+
+interface StoredTree {
+  id: string;
+  name: string;
+  description?: string;
+  characters: StoredCharacter[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 // Database service for authenticated users
 export class DatabaseTreeService {
@@ -64,11 +126,11 @@ export class DatabaseTreeService {
   }
 
   // Transform database objects to frontend types
-  private transformDatabaseTrees(dbTrees: any[]): CharacterTree[] {
+  private transformDatabaseTrees(dbTrees: DbTree[]): CharacterTree[] {
     return dbTrees.map(tree => this.transformDatabaseTree(tree));
   }
 
-  private transformDatabaseTree(dbTree: any): CharacterTree {
+  private transformDatabaseTree(dbTree: DbTree): CharacterTree {
     return {
       id: dbTree.id,
       name: dbTree.name,
@@ -79,18 +141,18 @@ export class DatabaseTreeService {
     };
   }
 
-  private transformDatabaseCharacter(dbChar: any): Character {
+  private transformDatabaseCharacter(dbChar: DbCharacter): Character {
     return {
       id: dbChar.id,
       name: dbChar.name,
-      description: dbChar.description,
+      description: dbChar.description || '',
       age: dbChar.age,
       occupation: dbChar.role,
       traits: dbChar.background ? dbChar.background.split(', ').filter(Boolean) : [],
-      relationships: dbChar.relationships.map((rel: any) => ({
+      relationships: dbChar.relationships.map((rel: DbRelationship) => ({
         id: rel.id,
         targetCharacterId: rel.relatedToId,
-        type: rel.type,
+        type: rel.type as RelationshipType,
         description: rel.description,
       })),
       position: {
@@ -114,13 +176,17 @@ export class LocalStorageTreeService {
     if (!stored) return [];
     
     try {
-      const trees = JSON.parse(stored);
-      return trees.map((tree: any) => ({
+      const trees = JSON.parse(stored) as StoredTree[];
+      return trees.map((tree: StoredTree) => ({
         ...tree,
         createdAt: new Date(tree.createdAt),
         updatedAt: new Date(tree.updatedAt),
-        characters: tree.characters.map((char: any) => ({
+        characters: tree.characters.map((char: StoredCharacter) => ({
           ...char,
+          relationships: char.relationships.map(rel => ({
+            ...rel,
+            type: rel.type as RelationshipType,
+          })),
           createdAt: new Date(char.createdAt),
           updatedAt: new Date(char.updatedAt),
         })),

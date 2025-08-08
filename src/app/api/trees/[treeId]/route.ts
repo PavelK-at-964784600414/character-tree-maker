@@ -85,7 +85,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     // Update tree in a transaction
     const updatedTree = await prisma.$transaction(async (tx) => {
       // Update tree basic info
-      const tree = await tx.characterTree.update({
+      await tx.characterTree.update({
         where: { id: params.treeId },
         data: {
           name,
